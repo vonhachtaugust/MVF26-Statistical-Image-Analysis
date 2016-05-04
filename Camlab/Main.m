@@ -3,6 +3,40 @@ clf;
 clear all;
 warning('off','all')
 
+%% Create webcam object and obtain an image:
+% Clear the camera.
+clear cam;
+
+% Connect to the webcam. (if such exists and requires matlab package)
+cam = webcam(1);
+%preview(cam); 
+
+img = snapshot(cam);
+
+% Display the frame in a figure window.
+image(img);
+
+clear cam;
+%% binaryResample
+
+I = imread('mtglol.png');
+I = rgb2gray(I) > 140;
+figure(1), imshow(I);
+Ir = binaryResample(I,0.5,1);
+figure(2), imshow(Ir);
+
+
+%%
+
+% clear('cam')
+% cam = webcam(1);
+% cam.AvailableResolutions
+% cam.Resolution = '352x288';
+% preview(cam)
+% img = snapshot(cam);
+% image(img);
+% pause(.1)
+
 %%%%%% Parameters %%%%%%
 threshold = 90;
 k = 1;
