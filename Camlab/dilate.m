@@ -1,0 +1,2 @@
+function dilateImage = dilate(I);
+

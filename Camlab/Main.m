@@ -22,8 +22,19 @@ clear cam;
 I = imread('mtglol.png');
 I = rgb2gray(I) > 140;
 figure(1), imshow(I);
-Ir = binaryResample(I,0.5,1);
+Ir = binaryResample(I,1.5,0.5);
 figure(2), imshow(Ir);
+
+%% Database: Magnifiy image by 10 in each dimension
+
+load('database.mat');
+figure(1), imshow(database.h.glyph);
+I = binaryResample(database.h.glyph,10,10);
+figure(2), imshow(I);
+
+%% Morphological operations
+
+
 
 
 %%
