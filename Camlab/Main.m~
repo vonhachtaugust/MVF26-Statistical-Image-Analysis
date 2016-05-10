@@ -3,8 +3,6 @@ clf;
 clear all;
 warning('off','all')
 
-
-
 %% Create webcam object and obtain an image:
 % Clear the camera.
 clear cam;
@@ -36,20 +34,21 @@ figure(2), imshow(I);
 
 %% Morphological operations (binary)
 
-% Read image:
-I = imread('8.jpg');
-I = rgb2gray(I) > 100;
+I = imread('mtglol.png');
+I = rgb2gray(I) > 140;
+I = r
 figure(1), imshow(I);
+%Ir = erode(dilate(I)); % Closing
+Ir = dilate(erode(I)); % Opening
+figure(2), imshow(Ir);
 
-% Opening then closing:
-% Ir = dilate(erode(I)); % Opening
-% Ir = erode(dilate(Ir)); % Closing
-% figure(2), imshow(Ir);
+%% Gaussian filter (not binary, gray scale)
 
-% Edge filter:
-Ir_edge = edge(I,'Canny');
-figure(3), imshow(Ir_edge)
-
+I = imread('mtglol.png');
+I = rgb2gray(I) > 140;
+figure(1), imshow(I);
+Ir = GaussianBlur(I,1,0.8);
+figure(2), imshow(Ir);
 
 %%
 
