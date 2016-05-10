@@ -4,7 +4,6 @@ clear all;
 warning('off','all')
 
 
-
 %% Create webcam object and obtain an image:
 % Clear the camera.
 clear cam;
@@ -35,32 +34,75 @@ I = binaryResample(database.h.glyph,10,10);
 figure(2), imshow(I);
 
 %% Morphological operations (binary)
-
+clf;
 % Read image:
-I = imread('8.jpg');
-I = rgb2gray(I) > 100;
-figure(1), imshow(I);
+I = imread('23.jpg');
+I = rgb2gray(I) > 60;
+% figure(1), imshow(I);
 
 % Opening then closing:
-% Ir = dilate(erode(I)); % Opening
-% Ir = erode(dilate(Ir)); % Closing
+% I = dilate(erode(I2)); % Opening
+
+% I = dilate(erode(I2)); % Opening
+% I = erode(dilate(I2)); % Closing
+% I = erode(dilate(I)); % Closing
 % figure(2), imshow(Ir);
 
 % Edge filter:
 Ir_edge = edge(I,'Canny');
-figure(3), imshow(Ir_edge)
+% [H,T,R] = hough(Ir_edge, 'Theta', [(80:0.2:89.99),(-90:0.2:-80)]);
+[H,T,R] = hough(Ir_edge, 'Theta', -10:0.2:10);
 
+figure(1)
+% subplot(2,1,1);
+% imshow(Ir_edge)
+% title('Original edges');
+% subplot(2,1,2);
+imshow(imadjust(mat2gray(H)),'XData',T,'YData',R,...
+      'InitialMagnification','fit');
+title('Hough transform of gantrycrane.png');
+xlabel('\theta'), ylabel('\rho');
+axis on, axis normal, hold on;
+colormap(hot);
 
+P = houghpeaks(H,8,'threshold',ceil(0.5*max(H(:))));
+x = T(P(:,2));
+y = R(P(:,1));
+plot(x,y,'s','color','blue');
+
+lines = houghlines(Ir_edge,T,R,P,'FillGap',5,'MinLength',7);
+
+figure(2), imshow(I), hold on
+max_len = 0;
+for k = 1:length(lines)
+   xy = [lines(k).point1; lines(k).point2];
+   plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');
+
+   % Plot beginnings and ends of lines
+   plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');
+   plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');
+
+   % Determine the endpoints of the longest line segment
+   len = norm(lines(k).point1 - lines(k).point2);
+   if ( len > max_len)
+      max_len = len;
+      xy_long = xy;
+   end
+end
+% highlight the longest line segment
+plot(xy_long(:,1),xy_long(:,2),'LineWidth',2,'Color','red');
+
+sum = 0;
+for i = 1:length(lines)
+%     if lines(i).theta > 0
+        sum = sum + lines(i).theta;
+%     else
+%         sum = sum + 180 + lines(i).theta;
+%     end
+end
+sum = sum/i
 %%
-
-% clear('cam')
-% cam = webcam(1);
-% cam.AvailableResolutions
-% cam.Resolution = '352x288';
-% preview(cam)
-% img = snapshot(cam);
-% image(img);
-% pause(.1)
+clc; 
 
 %%%%%% Parameters %%%%%%
 threshold = 90;
@@ -69,7 +111,7 @@ sigma = .8;
 
 %%%%%% Read and paint image %%%%%%
 figure(1)
-img = imread('8.jpg');
+img = imread('6.jpg');
 % img = imread('Realms-Uncharted.jpg');
 % img = imread('mtglol.png');
 imshow(img)

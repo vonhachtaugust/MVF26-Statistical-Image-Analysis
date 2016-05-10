@@ -1,12 +1,9 @@
-function neighbors = eightNeigbors(row,col);
-neighbors = [];
-
+function neighbours = eightNeigbors(row,col);
+neighbours = [];
 for i = -1:1
   for j = -1:1
-    if i == 0 && j == 0
-      ;
-    else
-      neighbors = [neighbors; [row+i col+j]];
+    if abs(i) || abs(j) 
+      neighbours = [neighbours; [row+i col+j]];
     end
   end
 end
