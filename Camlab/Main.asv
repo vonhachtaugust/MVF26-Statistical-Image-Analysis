@@ -9,7 +9,7 @@ clear cam;
 
 % Connect to the webcam. (if such exists and requires matlab package)
 cam = webcam(1);
-%preview(cam); 
+%preview(cam);
 
 img = snapshot(cam);
 
@@ -35,17 +35,31 @@ figure(2), imshow(I);
 %% Morphological operations (binary)
 
 % Read image:
-I = imread('Images\23.jpg');
-I = rgb2gray(I) > 60;
-% figure(1), imshow(I);
+I = imread('Images\dbImages\2.jpg');
+I = rgb2gray(I) > 80;
+figure(1), imshow(I);
 
-% Opening then closing:
-% I = dilate(erode(I2)); % Opening
-% I = erode(dilate(I)); % Closing
-% figure(2), imshow(Ir);
+% I = dilate(dilate(dilate(erode(erode(erode(I))))));
 
-% Edge filter:
-Ir_edge = edge(I,'Canny');
+I2 = I;
+NHOOD = [1,1,1;
+         1,0,1;
+         1,1,1];
+
+dilates = 10;
+for i = 1:dilates
+    I2=imdilate(I2,NHOOD);
+end
+
+erodes = 10;
+for j = 1:erodes
+    I2=imerode(I2,NHOOD);
+end
+figure(2), imshow(I2);
+
+
+
+Ir_edge = edge(I2,'Canny');
 
 %% Hough transformation
 
@@ -56,7 +70,7 @@ Ir_edge = edge(I,'Canny');
 
 % Plot hough matrix
 clf(1),figure(1),imshow(imadjust(mat2gray(H)),'XData',T,'YData',R,...
-      'InitialMagnification','fit');
+    'InitialMagnification','fit');
 title('Hough transform');
 xlabel('\theta'), ylabel('\rho');
 axis on, axis normal;
@@ -77,47 +91,62 @@ lines = houghlines(Ir_edge,T,R,P,'FillGap',5,'MinLength',7);
 % Plot lines in original image
 figure(2), imshow(I), hold on
 for k = 1:length(lines)
-   xy = [lines(k).point1; lines(k).point2];
-   plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');
-
-   % Plot beginnings and ends of lines
-   plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');
-   plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');
+    xy = [lines(k).point1; lines(k).point2];
+    plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');
+    
+    % Plot beginnings and ends of lines
+    plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');
+    plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');
 end
 
 sum = 0;
 for i = 1:length(lines)
-        sum = sum + lines(i).theta;
+    sum = sum + lines(i).theta;
 end
 sum = sum/i;
+disp(sum);
 %% Find and plot lines from hough transformation
 
 % Locate lines based on peaks in hough matrix
-lines2 = houghlines(Ir_edge,T,R,P2,'FillGap',5,'MinLength',7);
+lines2 = houghlines(Ir_edge,T2,R2,P2,'FillGap',5,'MinLength',7);
 
 % Plot lines in original image
 clf(3), figure(3), imshow(I), hold on
 for k = 1:length(lines2)
-   xy = [lines2(k).point1; lines2(k).point2];
-   plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');
-
-   % Plot beginnings and ends of lines
-   plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');
-   plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');
+    xy = [lines2(k).point1; lines2(k).point2];
+    plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');
+    
+    % Plot beginnings and ends of lines
+    plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');
+    plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');
 end
 
-sum = 0;
-for i = 1:length(lines)
-    if lines(i).theta > 0
-        sum = sum + lines(i).theta;
+sum2 = 0;
+for i = 1:length(lines2)
+    if lines2(i).theta > 0
+        sum2 = sum2 + lines2(i).theta;
     else
-        sum = sum + 180 + lines(i).theta;
+        sum2 = sum2 + 180 + lines2(i).theta;
     end
 end
-sum = sum/i;
+sum2 = sum2/i - 90;
+disp(sum2);
+%% Rotate by angle
+angle = (sum + sum2) / 2;
+disp(angle);
+NEWIMAGE = imrotate(I,angle,'nearest');
+figure(4),imshow(NEWIMAGE);
+
+% Clear borders
+tmpimage = ~NEWIMAGE;
+BW2 = imclearborder(tmpimage);
+NEWNEWIMAGE = ~BW2;
+imshow(NEWNEWIMAGE)
 
 %%
-clc; 
+
+%%
+clc;
 
 %%%%%% Parameters %%%%%%
 threshold = 90;
@@ -126,14 +155,14 @@ sigma = .8;
 
 %%%%%% Read and paint image %%%%%%
 figure(1)
-img = imread('Images/8.jpg');
+img = imread('Images\dbImages/27.jpg');
 imshow(img)
 
 %%%%%% Binarize and paint image %%%%%%
 tmpMatrix = img(:,:,1)/3 + img(:,:,2)/3 + img(:,:,3)/3;
 tmpMatrix = (tmpMatrix > threshold);
 figure(2)
-imshow(tmpMatrix); 
+imshow(tmpMatrix);
 
 %%%%%% Extract textbox (Assuming perfect align) %%%%%%
 vertpixs = floor(size(tmpMatrix(:,:,1),1)*0.88/8.8);
