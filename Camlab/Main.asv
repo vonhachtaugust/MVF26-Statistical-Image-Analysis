@@ -90,11 +90,10 @@ for i = 1:length(lines)
         sum = sum + lines(i).theta;
 end
 sum = sum/i;
-disp(sum);
 %% Find and plot lines from hough transformation
 
 % Locate lines based on peaks in hough matrix
-lines2 = houghlines(Ir_edge,T2,R2,P2,'FillGap',5,'MinLength',7);
+lines2 = houghlines(Ir_edge,T,R,P2,'FillGap',5,'MinLength',7);
 
 % Plot lines in original image
 clf(3), figure(3), imshow(I), hold on
@@ -107,21 +106,16 @@ for k = 1:length(lines2)
    plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');
 end
 
-sum2 = 0;
-for i = 1:length(lines2)
-    if lines2(i).theta > 0
-        sum2 = sum2 + lines2(i).theta;
+sum = 0;
+for i = 1:length(lines)
+    if lines(i).theta > 0
+        sum = sum + lines(i).theta;
     else
-        sum2 = sum2 + 180 + lines2(i).theta;
+        sum = sum + 180 + lines(i).theta;
     end
 end
-sum2 = sum2/i - 90;
-disp(sum2);
-%% yee
-angle = (sum + sum2) / 2;
-disp(angle);
-NEWIMAGE = imrotate(I,angle,'nearest');
-figure(4),imshow(NEWIMAGE);
+sum = sum/i;
+
 %%
 clc; 
 
