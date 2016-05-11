@@ -4,16 +4,11 @@ clear all;
 warning('off','all')
 
 %% Create webcam object and obtain an image:
-% Clear the camera.
-clear cam;
 
-% Connect to the webcam. (if such exists and requires matlab package)
+clear cam;
 cam = webcam(1);
 %preview(cam);
-
 img = snapshot(cam);
-
-% Display the frame in a figure window.
 image(img);
 
 clear cam;
@@ -35,34 +30,25 @@ figure(2), imshow(I);
 %% Morphological operations (binary)
 
 % Read image:
-I = imread('Images\dbImages\2.jpg');
-I = rgb2gray(I) > 80;
+I = imread('Images\dbImages\7.jpg');
+I = rgb2gray(I) > 100;
 figure(1), imshow(I);
 
-% I = dilate(dilate(dilate(erode(erode(erode(I))))));
-
 I2 = I;
-NHOOD = [1,1,1;
-         1,0,1;
-         1,1,1];
 
-dilates = 10;
-for i = 1:dilates
-    I2=imdilate(I2,NHOOD);
+NHOOD = [1,1,1; 1,0,1; 1,1,1];
+dilates_and_erodes = 8;
+for i = 1 : dilates_and_erodes
+    I2 = imdilate(I2,NHOOD);
 end
-
-erodes = 10;
-for j = 1:erodes
-    I2=imerode(I2,NHOOD);
+for j = 1 : dilates_and_erodes
+    I2 = imerode(I2,NHOOD);
 end
 figure(2), imshow(I2);
 
-
-
-Ir_edge = edge(I2,'Canny');
-
 %% Hough transformation
 
+Ir_edge = edge(I2,'Canny');
 [H,T,R] = hough(Ir_edge, 'Theta', -10:0.2:10);
 [H2,T2,R2] = hough(Ir_edge, 'Theta', [(80:0.2:89.8),(-89.8:0.2:-80)]);
 
@@ -77,24 +63,22 @@ axis on, axis normal;
 colormap(hot);
 
 % Locate and plot peaks in hough matrix
-P = houghpeaks(H,8,'threshold',ceil(0.5*max(H(:))));
-P2 = houghpeaks(H2,8,'threshold',ceil(0.5*max(H2(:))));
+P = houghpeaks(H,18,'threshold',ceil(0.5*max(H(:))));
+P2 = houghpeaks(H2,18,'threshold',ceil(0.5*max(H2(:))));
 x = T(P(:,2));
 y = R(P(:,1));
 hold on, plot(x,y,'s','color','blue');
 
-%% Find and plot lines from hough transformation
+%% Find and plot vertical lines from hough transformation
 
 % Locate lines based on peaks in hough matrix
 lines = houghlines(Ir_edge,T,R,P,'FillGap',5,'MinLength',7);
 
-% Plot lines in original image
-figure(2), imshow(I), hold on
+% Plot lines and mark beginning/end in original image
+figure(3), imshow(I), hold on
 for k = 1:length(lines)
     xy = [lines(k).point1; lines(k).point2];
     plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');
-    
-    % Plot beginnings and ends of lines
     plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');
     plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');
 end
@@ -104,19 +88,17 @@ for i = 1:length(lines)
     sum = sum + lines(i).theta;
 end
 sum = sum/i;
-disp(sum);
-%% Find and plot lines from hough transformation
+
+%% Find and plot horizontal lines from hough transformation
 
 % Locate lines based on peaks in hough matrix
 lines2 = houghlines(Ir_edge,T2,R2,P2,'FillGap',5,'MinLength',7);
 
-% Plot lines in original image
-clf(3), figure(3), imshow(I), hold on
+% Plot lines and mark beginning/end in original image
+figure(3), imshow(I), hold on
 for k = 1:length(lines2)
     xy = [lines2(k).point1; lines2(k).point2];
     plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');
-    
-    % Plot beginnings and ends of lines
     plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');
     plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');
 end
@@ -130,19 +112,30 @@ for i = 1:length(lines2)
     end
 end
 sum2 = sum2/i - 90;
-disp(sum2);
+
 %% Rotate by angle
 angle = (sum + sum2) / 2;
 disp(angle);
-NEWIMAGE = imrotate(I,angle,'nearest');
+NEWIMAGE = imrotate(I,angle,'bilinear');
 
 % Clear borders
-tmpimage = ~NEWIMAGE;
-BW2 = imclearborder(tmpimage);
+BW2 = imclearborder(~NEWIMAGE);
 NEWNEWIMAGE = ~BW2;
 figure(4), imshow(NEWNEWIMAGE)
 
 %% Extend borders to frame
+NEWNEWIMAGE = extendBorders(NEWNEWIMAGE,searchResolution);
+
+NEWNEWNEWIMAGE = imdilate(imerode(NEWNEWIMAGE,NHOOD),NHOOD);
+% NEWNEWNEWIMAGE = imdilate(imerode(NEWNEWNEWIMAGE,NHOOD),NHOOD);
+imshow(NEWNEWNEWIMAGE);
+%% Extract Textbox
+width = size(NEWNEWNEWIMAGE,2);
+height = size(NEWNEWNEWIMAGE,1);
+
+textbox = NEWNEWNEWIMAGE(0.06*height:0.103*height , 0.081*width:0.75*width);
+figure(5), imshow(textbox);
+
 
 
 %%
