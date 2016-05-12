@@ -148,7 +148,7 @@ sigma = .8;
 
 %%%%%% Read and paint image %%%%%%
 figure(1)
-img = imread('Images\dbImages/27.jpg');
+img = imread('Images\dbImages/26.jpg');
 imshow(img)
 
 %%%%%% Binarize and paint image %%%%%%
