@@ -1,6 +1,9 @@
-function Ir = binaryResample(I, widthExtend, heightExtend);
+function Ir = binaryResample(I, width, height);
 
 [Ny,Nx] = size(I);
+
+widthExtend = width/Nx;
+heightExtend = height/Ny;
 
 % New image sizes
 Nx_new = round(Nx*widthExtend);
@@ -16,11 +19,11 @@ for i = 1:Ny % For each row:
     j = 1;
     while j <= Nx % column loop
         count = true;
-        if I(i,j) == 0 % black pixel
+        if ~I(i,j) % black pixel
             len(1) = j; % store start position
-            while count && j < Nx % count the sequence length
+            while count % count the sequence length
                 j = j + 1;
-                if I(i,j) ~= 0
+                if I(i,j)
                     len(2) = j; % store end position
                     count = false;
                 elseif j == Nx
@@ -28,8 +31,8 @@ for i = 1:Ny % For each row:
                     count = false;
                 end
             end
+            sequence = [sequence; len]; % Add to sequence list for row i
         end
-        sequence = [sequence; len]; % Add to sequence list for row i
         j = j + 1;
     end
     sequence = round(widthExtend.*sequence); % Extend the sequence length
@@ -56,11 +59,11 @@ for i = 1:Nx_new % For each column in extended I (Iw)
     j = 1;
     while j <= Ny % row loop
         count = true;
-        if Iw(j,i) == 0 % black pixel
+        if ~Iw(j,i) % black pixel
             len(1) = j; % store start position
-            while count && j < Ny % count the sequence length
+            while count % count the sequence length
                 j = j + 1;
-                if Iw(j,i) ~= 0
+                if Iw(j,i)
                     len(2) = j; % store end position
                     count = false;
                 elseif j == Ny
@@ -68,8 +71,8 @@ for i = 1:Nx_new % For each column in extended I (Iw)
                     count = false;
                 end
             end
+            sequence = [sequence; len];
         end
-        sequence = [sequence; len];
         j = j + 1;
     end
     sequence = round(heightExtend.*sequence);
