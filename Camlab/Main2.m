@@ -3,8 +3,8 @@ clf
 clearvars
 warning('off','all')
 
-% Read image:
-I = imread('Images\dbImages\1.jpg');
+% Read image:---------------------------------------------------
+I = imread('Images/dbImages/2.jpg');
 I = rgb2gray(I) > 100;
 figure(1), imshow(I);
 
@@ -20,21 +20,22 @@ for j = 1 : dilates_and_erodes
 end
 % figure(2), imshow(I2);
 
-%%%%%%% Hough transformation %%%%%%%%%
-
+% Hough transformation:----------------------------------------
 Ir_edge = edge(I2,'Canny');
 [H,T,R] = hough(Ir_edge, 'Theta', -10:0.2:10);
 [H2,T2,R2] = hough(Ir_edge, 'Theta', [(80:0.2:89.8),(-89.8:0.2:-80)]);
 
-% Plot hough matrix
-% clf(1),figure(1),imshow(imadjust(mat2gray(H)),'XData',T,'YData',R,...
-%     'InitialMagnification','fit');
-% title('Hough transform');
-% xlabel('\theta'), ylabel('\rho');
-% axis on, axis normal;
-% colormap(hot);
+% Plot of hough matrix and its peaks
 
-% Locate and plot peaks in hough matrix
+% Plot hough matrix:-------------------------------------------
+clf(1),figure(1),imshow(imadjust(mat2gray(H)),'XData',T,'YData',R,...
+    'InitialMagnification','fit');
+title('Hough transform');
+xlabel('\theta'), ylabel('\rho');
+axis on, axis normal;
+colormap(hot);
+
+% Locate and plot peaks in hough matrix:------------------------
 P = houghpeaks(H,18,'threshold',ceil(0.5*max(H(:))));
 P2 = houghpeaks(H2,18,'threshold',ceil(0.5*max(H2(:))));
 % x = T(P(:,2));
@@ -43,10 +44,10 @@ P2 = houghpeaks(H2,18,'threshold',ceil(0.5*max(H2(:))));
 
 % Find and plot vertical lines from hough transformation
 
-% Locate lines based on peaks in hough matrix
+% Locate lines based on peaks in hough matrix:------------------
 lines = houghlines(Ir_edge,T,R,P,'FillGap',5,'MinLength',7);
 
-% Plot lines and mark beginning/end in original image
+% Plot lines and mark beginning/end in original image:----------
 figure(3), imshow(I), hold on
 for k = 1:length(lines)
     xy = [lines(k).point1; lines(k).point2];
@@ -63,10 +64,10 @@ sum = sum/i;
 
 % Find and plot horizontal lines from hough transformation
 
-% Locate lines based on peaks in hough matrix
+% Locate lines based on peaks in hough matrix:-----------------
 lines2 = houghlines(Ir_edge,T2,R2,P2,'FillGap',5,'MinLength',7);
 
-% Plot lines and mark beginning/end in original image
+% Plot lines and mark beginning/end in original image:---------
 figure(3), imshow(I), hold on
 for k = 1:length(lines2)
     xy = [lines2(k).point1; lines2(k).point2];
@@ -85,28 +86,28 @@ for i = 1:length(lines2)
 end
 sum2 = sum2/i - 90;
 
-% Rotate by angle
+% Rotate by angle:-----------------------------------------------
 angle = (sum + sum2) / 2;
 disp(['Angle corrected: ', num2str(angle), 'degrees']);
 NEWIMAGE = imrotate(I,angle,'bilinear');
 
-% Clear borders
+% Clear borders:-------------------------------------------------
 BW2 = imclearborder(~NEWIMAGE);
 NEWNEWIMAGE = ~BW2;
 figure(4), imshow(NEWNEWIMAGE)
 
-% Extend borders to frame
+% Extend borders to frame:----------------------------------------
 searchResolution = 20;
 NEWNEWIMAGE = extendBorders(NEWNEWIMAGE,searchResolution);
 
 NEWNEWNEWIMAGE = imdilate(imerode(NEWNEWIMAGE,NHOOD),NHOOD);
 figure(5), imshow(NEWNEWNEWIMAGE);
 
-% Extract Textbox
+% Extract Textbox:------------------------------------------------
 width = size(NEWNEWNEWIMAGE,2);
 height = size(NEWNEWNEWIMAGE,1);
 
-textbox = NEWNEWNEWIMAGE(0.06*height:0.101*height , 0.081*width:0.75*width);
+textbox = NEWNEWNEWIMAGE(0.05*height:0.107*height , 0.081*width:0.75*width);
 
 BW3 = imclearborder(~textbox);
 textbox = ~BW3;

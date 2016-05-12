@@ -29,11 +29,22 @@ figure(2), imshow(I);
 
 %% Morphological operations (binary)
 
-% Read image:
-I = imread('Images\dbImages\7.jpg');
-I = rgb2gray(I) > 100;
-figure(1), imshow(I);
+searchResolution = 1;
 
+% Read image:
+I = imread('Images/dbImages/7.jpg');
+I = rgb2gray(I) > 100;
+
+BW = imclearborder(~I);
+I = ~BW;
+
+newI = extendBorders(I,searchResolution);
+figure(1), imshow(newI);
+
+%NHOOD = [1,1,1; 1,1,1; 1,1,1];
+%Ir = imerode(I,NHOOD);
+%Ir = imdilate(Ir,NHOOD);
+%figure(2), imshow(Ir);
 I2 = I;
 
 NHOOD = [1,1,1; 1,0,1; 1,1,1];
@@ -44,7 +55,13 @@ end
 for j = 1 : dilates_and_erodes
     I2 = imerode(I2,NHOOD);
 end
-figure(2), imshow(I2);
+
+BW2 = imclearborder(~I2);
+I2 = ~BW2;
+
+newI2 = extendBorders(I2,searchResolution);
+
+figure(2), imshow(newI2);
 
 %% Hough transformation
 
