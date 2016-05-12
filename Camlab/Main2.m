@@ -3,9 +3,9 @@ clf
 clearvars
 warning('off','all')
 
-% Read image:---------------------------------------------------
-I = imread('Images/dbImages/2.jpg');
-I = rgb2gray(I) > 100;
+% Read image:
+I = imread('Images\dbImages\7.jpg');
+I = rgb2gray(I) > 80;
 figure(1), imshow(I);
 
 I2 = I;
@@ -107,7 +107,7 @@ figure(5), imshow(NEWNEWNEWIMAGE);
 width = size(NEWNEWNEWIMAGE,2);
 height = size(NEWNEWNEWIMAGE,1);
 
-textbox = NEWNEWNEWIMAGE(0.05*height:0.107*height , 0.081*width:0.75*width);
+textbox = NEWNEWNEWIMAGE(0.06*height:0.105*height , 0.079*width:0.75*width);
 
 BW3 = imclearborder(~textbox);
 textbox = ~BW3;
