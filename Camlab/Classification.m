@@ -27,12 +27,20 @@ for i = 1:numel(fields)
     end
 end
 
-%% Upper letters
-figure(1)
-upperFields = fieldnames(databaseUpper);
 
-for i = 1:numel(upperFields);
-    I = databaseUpper.(upperFields{i}).glyph;
+%%
+figure(1)
+
+% Upper letters
+field = fieldnames(databaseUpper);
+letterDatabase = databaseUpper;
+
+% Lower letters:
+%field = fieldnames(databaseLower);
+%letterDatabase = databaseLower;
+
+for i = 1:numel(field);
+    I = letterDatabase.(field{i}).glyph;
     
     perimeter = sum(sum(bwperim(I)));
     area = bwarea(I);
@@ -46,35 +54,7 @@ for i = 1:numel(upperFields);
     scatter3(X,Y,Z,'.')
     
     le = 0.005;
-    text(X + le,Y + le,Z + le, upperFields(i));
-    
-    hold on
-end
-title('Feature space');
-xlabel('Formfactor'), ylabel('Elongatedness'), zlabel('Convexity');
-axis on, axis normal;
-
-
-%% Lower letters 
-figure(2)
-lowerFields = fieldnames(databaseLower);
-
-for i = 1:numel(lowerFields);
-    I = databaseLower.(lowerFields{i}).glyph;
-    
-    perimeter = sum(sum(bwperim(I)));
-    area = bwarea(I);
-    thickness = (perimeter - sqrt(perimeter^2-8*area))/4;
-    convexperim = sum(sum(bwperim(bwconvhull(~I))));7
-    
-    Y = 4*pi*area/(perimeter^2); % Formfactor
-    X = area/(thickness^2); % Elongatedness
-    Z = convexperim/perimeter; % Convexity
-    
-    scatter3(X,Y,Z,'.')
-    
-    le = 0.001;
-    text(X + le,Y + le,Z + le, lowerFields(i));
+    text(X + le,Y + le,Z + le, field(i));
     
     hold on
 end
