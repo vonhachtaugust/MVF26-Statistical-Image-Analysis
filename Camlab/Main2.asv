@@ -120,8 +120,8 @@ figure(5), imshow(NEWNEWNEWIMAGE);
 width = size(NEWNEWNEWIMAGE,2);
 height = size(NEWNEWNEWIMAGE,1);
 textbox = NEWNEWNEWIMAGE(0.06*height:0.11*height , 0.079*width:0.74*width);
-BW3 = imclearborder(~textbox);
-textbox = ~BW3;
+BW3 = imclearborder(~textbox,NHOOD2));
+textbox = imerode(~BW3,NHOOD2);
 figure(6), imshow(textbox);
 
 % Extract each letter and insert into struct names "letters"
