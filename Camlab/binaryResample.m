@@ -22,7 +22,7 @@ for i = 1:Ny % For each row:
         if ~I(i,j) % black pixel
             len(1) = j; % store start position
             while count % count the sequence length
-                j = j + 1;
+                
                 if I(i,j)
                     len(2) = j; % store end position
                     count = false;
@@ -30,6 +30,7 @@ for i = 1:Ny % For each row:
                     len(2) = Nx;
                     count = false;
                 end
+                j = j + 1;
             end
             sequence = [sequence; len]; % Add to sequence list for row i
         end
@@ -62,7 +63,7 @@ for i = 1:Nx_new % For each column in extended I (Iw)
         if ~Iw(j,i) % black pixel
             len(1) = j; % store start position
             while count % count the sequence length
-                j = j + 1;
+                
                 if Iw(j,i)
                     len(2) = j; % store end position
                     count = false;
@@ -70,6 +71,7 @@ for i = 1:Nx_new % For each column in extended I (Iw)
                     len(2) = Ny;
                     count = false;
                 end
+                j = j + 1;
             end
             sequence = [sequence; len];
         end

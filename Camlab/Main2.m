@@ -156,3 +156,31 @@ for i = 1:size(texter.Text,2)-2
     end
 end
 save('database.mat','database');
+
+%% Compare letter to database
+clc
+load('database.mat')
+
+alphabet = fieldnames(database);
+letterNames = fieldnames(letters);
+density = zeros(size(letterNames));
+proposedLetter = char(size(letterNames));
+
+for i = 1: size(letterNames,1)
+    currentLetter = letterNames(i);
+    A = binaryResample(letters.(char(currentLetter)),64,64);
+    for j = 1:size(alphabet,1)
+%         imshow(database.(char(alphabet(j))).glyph)
+        B = binaryResample(database.(char(alphabet(j))).glyph,64,64);
+        C = ~(~A.*~B);
+        cBl = length(find(C == 0));
+        aBl = length(find(A == 0));
+        densityTmp = cBl/aBl;
+        if densityTmp > max(density(i))
+            density(i) = densityTmp;
+            proposedLetter(i) = char(alphabet(j));
+        end
+    end
+    
+%     disp(['Relative letter density for -- ', currentLetter, ' -- equals', density(i)])
+end
