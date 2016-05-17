@@ -58,7 +58,7 @@ NEWNEWNEWIMAGE = imdilate(imerode(NEWNEWIMAGE,NHOOD),NHOOD);
 % Extract Textbox:------------------------------------------------
 width = size(NEWNEWNEWIMAGE,2);
 height = size(NEWNEWNEWIMAGE,1);
-textbox = NEWNEWNEWIMAGE(0.06*height:0.105*height , 0.079*width:0.75*width);
+textbox = NEWNEWNEWIMAGE(0.06*height:0.105*height , 0.079*width:0.74*width);
 BW3 = imclearborder(~textbox);
 textbox = ~BW3;
 

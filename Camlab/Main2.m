@@ -3,20 +3,31 @@ clf
 clearvars
 warning('off','all')
 
+
 % Read image:---------------------------------------------------
 I = imread('Images/dbImages/2.jpg');
 I = rgb2gray(I) > 100;
 figure(1), imshow(I);
 
+NHOOD1 = [0,1,0; 1,0,1; 0,1,0]; %neumann neighbourhood
+NHOOD2 = [1,1,1; 1,0,1; 1,1,1]; %complete euclidean neighbourhood
+NHOOD3 = [0,0,0; 1,0,1; 0,0,0]; %horizontal neighbourhood
+
+% Read image:
+I = imread('Images\dbImages\11.jpg');
+I = rgb2gray(I) > 80;
+I = imerode(imdilate(imerode(imdilate(I,NHOOD1),NHOOD1),NHOOD1),NHOOD1);
+figure(10), imshow(I);
+% Export\export_fig(
 I2 = I;
 
-NHOOD = [1,1,1; 1,0,1; 1,1,1];
+
 dilates_and_erodes = 8;
 for i = 1 : dilates_and_erodes
-    I2 = imdilate(I2,NHOOD);
+    I2 = imdilate(I2,NHOOD2);
 end
 for j = 1 : dilates_and_erodes
-    I2 = imerode(I2,NHOOD);
+    I2 = imerode(I2,NHOOD2);
 end
 
 figure(2), imshow(I2);
@@ -101,7 +112,7 @@ figure(4), imshow(NEWNEWIMAGE)
 searchResolution = 20;
 NEWNEWIMAGE = extendBorders(NEWNEWIMAGE,searchResolution);
 
-NEWNEWNEWIMAGE = imdilate(imerode(NEWNEWIMAGE,NHOOD),NHOOD);
+NEWNEWNEWIMAGE = imdilate(imerode(NEWNEWIMAGE,NHOOD2),NHOOD2);
 figure(5), imshow(NEWNEWNEWIMAGE);
 
 
@@ -109,17 +120,17 @@ figure(5), imshow(NEWNEWNEWIMAGE);
 width = size(NEWNEWNEWIMAGE,2);
 height = size(NEWNEWNEWIMAGE,1);
 
-textbox = NEWNEWNEWIMAGE(0.06*height:0.105*height , 0.079*width:0.75*width);
+textbox = NEWNEWNEWIMAGE(0.06*height:0.11*height , 0.079*width:0.74*width);
 
 BW3 = imclearborder(~textbox);
 textbox = ~BW3;
 
-% textbox = imerode(imdilate(textbox,NHOOD),NHOOD);
-% textbox = imdilate(imerode(textbox,NHOOD),NHOOD);
-
+% textbox = imerode(imdilate(textbox,NHOOD2),NHOOD2);
+% textbox = imdilate(imerode(textbox,NHOOD2),NHOOD2);
 
 figure(6), imshow(textbox);
-%% Extract each letter and insert into struct names "letters"
+
+% Extract each letter and insert into struct names "letters"
 clear letters
 
 middle = ceil(size(textbox,1) /2);
@@ -136,6 +147,35 @@ while i < size(textbox,2)
         i = i + 1;
     end
 end
+
+%% Compare letter to database
+clc
+load('database.mat')
+
+alphabet = fieldnames(database);
+letterNames = fieldnames(letters);
+density = zeros(size(letterNames));
+proposedLetter = char(size(letterNames));
+
+for i = 1: size(letterNames,1)
+    currentLetter = letterNames(i);
+    A = binaryResample(letters.(char(currentLetter)),64,64);
+    for j = 1:size(alphabet,1)
+%         imshow(database.(char(alphabet(j))).glyph)
+        B = binaryResample(database.(char(alphabet(j))).glyph,64,64);
+        C = ~(~A.*~B);
+        cBl = length(find(C == 0));
+        bBl = length(find(B == 0));
+        densityTmp = cBl/bBl;
+        if densityTmp > max(density(i))
+            density(i) = densityTmp;
+            proposedLetter(i) = char(alphabet(j));
+        end
+    end
+    
+%     disp(['Relative letter density for -- ', currentLetter, ' -- equals', density(i)])
+end
+
 
 %% Automatically read and add all letters to database
 %%%%%% Read and paint character %%%%%%
@@ -158,31 +198,3 @@ for i = 1:size(texter.Text,2)-2
     end
 end
 save('database.mat','database');
-
-%% Compare letter to database
-clc
-load('database.mat')
-
-alphabet = fieldnames(database);
-letterNames = fieldnames(letters);
-density = zeros(size(letterNames));
-proposedLetter = char(size(letterNames));
-
-for i = 1: size(letterNames,1)
-    currentLetter = letterNames(i);
-    A = binaryResample(letters.(char(currentLetter)),64,64);
-    for j = 1:size(alphabet,1)
-%         imshow(database.(char(alphabet(j))).glyph)
-        B = binaryResample(database.(char(alphabet(j))).glyph,64,64);
-        C = ~(~A.*~B);
-        cBl = length(find(C == 0));
-        aBl = length(find(A == 0));
-        densityTmp = cBl/aBl;
-        if densityTmp > max(density(i))
-            density(i) = densityTmp;
-            proposedLetter(i) = char(alphabet(j));
-        end
-    end
-    
-%     disp(['Relative letter density for -- ', currentLetter, ' -- equals', density(i)])
-end
