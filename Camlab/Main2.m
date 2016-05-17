@@ -3,9 +3,9 @@ clf
 clearvars
 warning('off','all')
 
-% Read image:
-I = imread('Images\dbImages\7.jpg');
-I = rgb2gray(I) > 80;
+% Read image:---------------------------------------------------
+I = imread('Images/dbImages/2.jpg');
+I = rgb2gray(I) > 100;
 figure(1), imshow(I);
 
 I2 = I;
@@ -18,7 +18,8 @@ end
 for j = 1 : dilates_and_erodes
     I2 = imerode(I2,NHOOD);
 end
-% figure(2), imshow(I2);
+
+figure(2), imshow(I2);
 
 % Hough transformation:----------------------------------------
 Ir_edge = edge(I2,'Canny');
@@ -102,6 +103,7 @@ NEWNEWIMAGE = extendBorders(NEWNEWIMAGE,searchResolution);
 
 NEWNEWNEWIMAGE = imdilate(imerode(NEWNEWIMAGE,NHOOD),NHOOD);
 figure(5), imshow(NEWNEWNEWIMAGE);
+
 
 % Extract Textbox:------------------------------------------------
 width = size(NEWNEWNEWIMAGE,2);
