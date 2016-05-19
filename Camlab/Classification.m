@@ -13,9 +13,6 @@ load('database.mat');
 fields = fieldnames(database);
 points = zeros(numel(fields),3);
 
-databaseUpper = struct;
-databaseLower = struct;
-
 for i = 1:numel(fields)
     glyph = database.(fields{i}).glyph;
     tf = isstrprop(fields(i),'upper');
