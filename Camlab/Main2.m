@@ -17,7 +17,12 @@ searchResolution = 20; % Resolution when searching for borders of card, recommen
 %%%%%%%%%% END OF PARAMETERS %%%%%%%%%%
 
 % Read image ---------------------------------------------------
-I = imread('Images\dbImages\7.jpg');
+if strcmp(computer,'PCWIN')
+    I = imread('Images\dbImages\7.jpg');
+else
+    I = imread('Images/dbImages/14.jpg');
+end
+
 figure(1), imshow(I)
 I_bin = rgb2gray(I) > binarizationThreshold;
 % figure(2), imshow(I_bin);

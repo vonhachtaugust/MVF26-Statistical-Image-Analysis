@@ -17,6 +17,8 @@ n03 = getCentralMoments(binaryImage,0,3);
 n12 = getCentralMoments(binaryImage,1,2);
 n21 = getCentralMoments(binaryImage,2,1);
 
+% Ration:
+
 
 % Formfactor:
 features = [features 4*pi*area/(perimeter^2)];
@@ -28,7 +30,7 @@ features = [features 4*pi*area/(perimeter^2)];
 features = [features convexperim/perimeter];
 
 % Solidity
-features = [features area/convexarea];
+%features = [features area/convexarea];
 
 % Area moment 1
 features = [features (n20+n02)];
