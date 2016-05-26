@@ -7,11 +7,14 @@ if strcmp(computer,'PCWIN')
     path(path,'.\src');
     path(path,'.\images');
     path(path,'.\database');
+    path(path,'.\database\ClassificationDatabase');
 else
     path(path,'./src');
     path(path,'./images');
     path(path,'./database');
+    path(path,'./database/ClassificationDatabase');
 end
+
 
 % Load necessary data
 I = imread('7.jpg');
@@ -21,7 +24,7 @@ load('databaseUpperCase.mat');
 load('databaseLowerCase.mat');
 letters = getLetters2(I);
 
-% Compare with database
+%% Compare with database
 %database = databaseLower;
 letterFields = fieldnames(letters);
 euclidean = struct;
