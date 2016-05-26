@@ -41,7 +41,7 @@ for i = 1:Ny % For each row:
     for k = 1:size(sequence,1)
         start = sequence(k,1);
         End = sequence(k,2);
-        if abs(End - start) >= 1 && End > start
+        if abs(End - start) >= 1 && End > start %&& start > 0 && End <= Ny       
             for m = start:End
                 Ir_widthExpand(i,m) = 0; % Set to black pixel
             end
@@ -82,7 +82,7 @@ for i = 1:Nx_new % For each column in extended I (Iw)
     for k = 1:size(sequence,1)
         start = sequence(k,1);
         End = sequence(k,2);
-        if abs(End-start) >= 1 && End > start
+        if abs(End-start) >= 1 && End > start %&& start > 0 && End <= Nx_new
             for m = start:End
                 Ir_heightExpand(m,i) = 0;
             end

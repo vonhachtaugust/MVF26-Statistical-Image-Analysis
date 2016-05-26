@@ -1,7 +1,7 @@
-function [letter,backtrack] = letterFiller(image, Y, X) %input image containing letter and a pixel position in wanted letter
-
+function [letter,backtrack] = letterFiller(image, Y, X,mode) %input image containing letter and a pixel position in wanted letter
 Q = [Y,X];
-minX = X;
+minX = X; maxX = X; 
+minY = Y; maxY = Y;
 tmpImage = ones(size(image));
 backtrack = 0;
 while ~isempty(Q)
@@ -15,17 +15,30 @@ while ~isempty(Q)
             if tmpImage(neigh(i,1),neigh(i,2)) ~= 0
                 
                 %%%% Check backtracking %%%%
-                if neigh(i,2) == minX - 1
+                if neigh(i,2) < minX
                     minX = neigh(i,2);
                     backtrack = backtrack + 1;
+                end
+                
+                if neigh(i,2) > maxX
+                    maxX = neigh(i,2);
+                end
+                if neigh(i,1) < minY
+                    minY = neigh(i,1);
+                end
+                if neigh(i,1) > maxY
+                    maxY = neigh(i,1);
                 end
                 
                 %%%% Add to queue %%%%
                 Q = [Q; neigh(i,:)];
                 tmpImage(neigh(i,1),neigh(i,2)) = 0;
+                
             end
         end
     end
 end
 
-letter = extendBorders(tmpImage,1);
+tmpImage2 = image(     (round(minY*0.5):maxY) , (minX:maxX)     );
+letter = extendBorders(tmpImage2,1);
+

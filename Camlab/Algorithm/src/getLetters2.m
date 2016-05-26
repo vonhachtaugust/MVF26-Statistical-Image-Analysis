@@ -1,13 +1,9 @@
-clc
-close all
-clearvars
-warning('off','all') % Here to remove warnings about scaling when using imshow()
-
+function letters = getLetters2(RGBimage)
 %%%%%%%%%% PARAMETERS %%%%%%%%%%%
 
 nhood1 = [0,1,0; 1,0,1; 0,1,0]; %neumann neighbourhood
 nhood2 = [1,1,1; 1,0,1; 1,1,1]; %complete euclidean neighbourhood
-nhood3 = [0,1,1,1,0; 1,1,0,1,1; 0,1,1,1,0]; %complete euclidean neighbourhood
+% nhood3 = [0,1,1,1,0; 1,1,0,1,1; 0,1,1,1,0]; %complete euclidean neighbourhood
 maxAngle = 10; % Maximum angle of picture in degrees
 binarizationThreshold = 70; %[0,255]
 dilates_and_erodes = 8; % Number of times to erode and dilate before hough transform
@@ -17,15 +13,7 @@ searchResolution = 20; % Resolution when searching for borders of card, recommen
 
 %%%%%%%%%% END OF PARAMETERS %%%%%%%%%%
 
-% Read image ---------------------------------------------------
-if strcmp(computer,'PCWIN')
-    I = imread('Images\dbImages\7.jpg');
-else
-    I = imread('Images/dbImages/14.jpg');
-end
-
-figure(1), imshow(I)
-I_bin = rgb2gray(I) > binarizationThreshold;
+I_bin = rgb2gray(RGBimage) > binarizationThreshold;
 % figure(2), imshow(I_bin);
 figure(2), imhist(rgb2gray(I));
 A = imhist(rgb2gray(I));
@@ -151,36 +139,5 @@ while i < size(textbox,2)
         counter2 = 0;
     else
         i = i + 1;
-    end
-end
-
-%% Compare letter to database
-clc
-load('database.mat')
-
-checkConstant = 1; %Allows ratio between DB and letter to diff half of value
-alphabet = fieldnames(database);
-letterNames = fieldnames(letters);
-density = zeros(size(letterNames));
-proposedLetter = char(size(letterNames));
-
-for i = 1: size(letterNames,1)
-    currentLetter = letterNames(i);
-    currentGlyph = letters.(char(currentLetter));
-    aRatio = size(currentGlyph,1)/size(currentGlyph,2);
-    A = binaryResample(currentGlyph,64,64);
-    for j = 1:size(alphabet,1)
-        currDBLetter = database.(char(alphabet(j)));
-        if round(checkConstant*aRatio/currDBLetter.ratio) == checkConstant
-            B = binaryResample(currDBLetter.glyph,64,64);
-            C = ~(~A.*~B);
-            cBl = length(find(C == 0));
-            bBl = length(find(B == 0));
-            densityTmp = cBl/bBl;
-            if densityTmp > max(density(i))
-                density(i) = densityTmp;
-                proposedLetter(i) = char(alphabet(j));
-            end
-        end
     end
 end

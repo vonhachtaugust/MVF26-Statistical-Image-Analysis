@@ -17,4 +17,8 @@ for i = 1 : width
     if flag == 1;
         break;
     end
+    if i == width
+        borderDepth = 0;
+    end
 end
+
