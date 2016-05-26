@@ -14,12 +14,12 @@ else
 end
 
 % Load necessary data
-I = imread('4.jpg');
+I = imread('7.jpg');
 %figure(1), imshow(I);
 load('database.mat');
 load('databaseUpperCase.mat');
 load('databaseLowerCase.mat');
-letters = getLetters(I);
+letters = getLetters2(I);
 
 % Compare with database
 %database = databaseLower;
