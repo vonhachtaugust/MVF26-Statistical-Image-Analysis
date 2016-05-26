@@ -17,7 +17,7 @@ searchResolution = 20; % Resolution when searching for borders of card, recommen
 %%%%%%%%%% END OF PARAMETERS %%%%%%%%%%
 
 % Read image ---------------------------------------------------
-I = imread('Images\dbImages\6.jpg');
+I = imread('Images\dbImages\7.jpg');
 figure(1), imshow(I)
 I_bin = rgb2gray(I) > binarizationThreshold;
 % figure(2), imshow(I_bin);
@@ -136,7 +136,8 @@ while i < size(textbox,2)
         i = i + 1;
     end
 end
-
+letters.nr5 = extendBorders(textbox(25:65,125:138),1);
+% letters.nr14 = imerode(letters.nr14,nhood1)
 %% Compare letter to database
 clc
 load('database.mat')
