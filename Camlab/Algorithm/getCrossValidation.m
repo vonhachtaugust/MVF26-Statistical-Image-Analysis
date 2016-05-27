@@ -48,7 +48,7 @@ end
 
 errorFields = fieldnames(errorRate);
 
-sum = 0;
+Sum = 0;
 correct = 0;
 for i = 1:numel(errorFields)
   glyphFields = fieldnames(errorRate.(errorFields{i}));
@@ -58,7 +58,7 @@ for i = 1:numel(errorFields)
     if strcmp(s1,s2)
       correct = correct + 1;
     end
-    sum = sum + 1;
+    Sum = Sum + 1;
   end
 end
-error = 1-correct/sum;
+error = 1-correct/Sum;
