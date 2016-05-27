@@ -15,6 +15,7 @@ n30 = getCentralMoments(binaryImage,3,0);
 n03 = getCentralMoments(binaryImage,0,3);
 n12 = getCentralMoments(binaryImage,1,2);
 n21 = getCentralMoments(binaryImage,2,1);
+features = [];
 
 % Ratio:
 if any(featurelist == 1)
