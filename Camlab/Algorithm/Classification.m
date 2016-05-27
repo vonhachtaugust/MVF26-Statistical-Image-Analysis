@@ -41,7 +41,10 @@ figure(2), plot(B)
 I = imread('1.jpg');
 %figure(1), imshow(I);
 load('database_highres.mat');
+<<<<<<< Updated upstream
 load('classificationDatabase.mat');
+=======
+>>>>>>> Stashed changes
 letters = getLetters2(I);
 
 %% Compare with database
