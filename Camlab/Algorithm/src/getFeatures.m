@@ -1,6 +1,5 @@
-function features = getFeatures(binaryImage)
+function features = getFeatures(binaryImage,featurelist)
 
-features = [];
 
 perimeter = sum(sum(bwperim(binaryImage)));
 area = bwarea(binaryImage);
@@ -18,37 +17,61 @@ n12 = getCentralMoments(binaryImage,1,2);
 n21 = getCentralMoments(binaryImage,2,1);
 
 % Ratio:
-features = [features size(binaryImage,1)/size(binaryImage,2)];
+if any(featurelist == 1)
+    features = [features size(binaryImage,1)/size(binaryImage,2)];
+end
 
 % Formfactor:
-features = [features 4*pi*area/(perimeter^2)];
+if any(featurelist == 2)
+    features = [features 4*pi*area/(perimeter^2)];
+end
 
 % Elongatedness:
-%features = [features area/((thickness)^2)];
+if any(featurelist == 3)
+    %features = [features area/((thickness)^2)];
+end
 
 % Convexity:
-features = [features convexperim/perimeter];
+if any(featurelist == 4)
+    features = [features convexperim/perimeter];
+end
 
 % Solidity
-%features = [features area/convexarea];
+if any(featurelist == 5)
+    %features = [features area/convexarea];
+end
 
 % Area moment 1
-features = [features (n20+n02)];
-    
+if any(featurelist == 6)
+    features = [features (n20+n02)];
+end
+
 % Area moment 2
-features = [features ((n20-n02)^2+4*n11^2)];
+if any(featurelist == 7)
+    features = [features ((n20-n02)^2+4*n11^2)];
+end
 
 % Area moment 3
-features = [features ((n30-3*n12)^2+(n03-3*n21)^2)];
+if any(featurelist == 8)
+    features = [features ((n30-3*n12)^2+(n03-3*n21)^2)];
+end
 
-% Area moment 4 
-features = [features ((n30+n12)^2+(n03+n21)^2)];
+% Area moment 4
+if any(featurelist == 9)
+    features = [features ((n30+n12)^2+(n03+n21)^2)];
+end
 
 % Perimeter moment 1
-features = [features ((n30-3*n12)*(n30+n12)*((n30+n12)^2-3*(n21+n03)^2) + (n03-3*n21)*(n03+n21)*((n03+n21)^2-3*(n12+n30)^2))];
+if any(featurelist == 10)
+    features = [features ((n30-3*n12)*(n30+n12)*((n30+n12)^2-3*(n21+n03)^2) + (n03-3*n21)*(n03+n21)*((n03+n21)^2-3*(n12+n30)^2))];
+end
 
 % Perimeter moment 2
-features = [features ((n20-n02)*((n30+n12)^2-(n21+n03)^2) + 4*n11*(n30+n12)*(n21+n03))];
+if any(featurelist == 11)
+    features = [features ((n20-n02)*((n30+n12)^2-(n21+n03)^2) + 4*n11*(n30+n12)*(n21+n03))];
+end
 
 % Perimeter moment 3
-features = [features ((3*n21-n03)*(n30+n12)*((n30+n12)^2-3*(n21+n03)^2) - (n30-3*n12)*(n21+n03)*(3*(n30+n12)^2-(n21+n03)^2))];
+if any(featurelist == 12)
+    features = [features ((3*n21-n03)*(n30+n12)*((n30+n12)^2-3*(n21+n03)^2) - (n30-3*n12)*(n21+n03)*(3*(n30+n12)^2-(n21+n03)^2))];
+end

@@ -9,7 +9,7 @@ nhood1 = [0,1,0; 1,1,1; 0,1,0]; %neumann neighbourhood
 nhood2 = [1,1,1; 1,1,1; 1,1,1]; %complete euclidean neighbourhood
 nhood3 = [0,1,0; 0,1,0; 0,1,0]; %down neighbourhood
 maxAngle = 10; % Maximum angle of picture in degrees
-binarizationThreshold = 85; %[0,255]
+binarizationThreshold = 65; %[0,255]
 dilates_and_erodes = 8; % Number of times to erode and dilate before hough transform
 houghLineThreshold = 0.5; % Threshold for how "strong" lines must be to be included
 maximumHoughLines = 18; % Maximum number of lines to be found by hough transformation
@@ -18,18 +18,15 @@ searchResolution = 20; % Resolution when searching for borders of card, recommen
 %%%%%%%%%% END OF PARAMETERS %%%%%%%%%%
 
 % Read image ---------------------------------------------------
-if ispc %strcmp(computer,'PCWIN64')
-%     I = imread('Images\dbImages\14.jpg');
-%     I = imread('Images\confirm6M.jpg');
-    I = imread('Images/dbImages_high/8.jpg');
-else
-    I = imread('Images/dbImages/14.jpg');
-end
+
+% I = imread('Images\dbImages\14.jpg');
+% I = imread('Images\confirm6M.jpg');
+I = imread('Images/dbImages_high/3.jpg');
 
 figure(1), imshow(I)
 I_bin = rgb2gray(I) > binarizationThreshold;
 % figure(2), imshow(I_bin);
-figure(2), imhist(rgb2gray(I));
+h = figure(2), imhist(rgb2gray(I));
 A = imhist(rgb2gray(I));
 B = zeros(size(A,1),1);
 meansize = 4;
@@ -38,6 +35,11 @@ for i = 1+meansize: size(A,1)-meansize
 end
 hold on
 plot(B)
+% saveas(h,'nr26','fig')
+
+
+
+
 
 % Apply erosion 10 times, then dilation 10 times to remove clutter
 I_bin2 = I_bin;
@@ -123,7 +125,7 @@ figure(8), imshow(new_I);
 % Extract Textbox:------------------------------------------------
 width = size(new_I,2);
 height = size(new_I,1);
-textbox = new_I(0.055*height:0.102*height , 0.074*width:0.78*width);
+textbox = new_I(0.055*height:0.105*height , 0.074*width:0.78*width);
 figure(9), imshow(textbox)
 textbox = imerode(textbox,nhood3);
 textbox = imerode(textbox,nhood1);
@@ -174,16 +176,16 @@ checkConstant = 1; %Allows ratio between DB and letter to diff half of value
 letterNames = fieldnames(letters);
 density = zeros(size(letterNames));
 proposedLetter = char(size(letterNames));
-% spaced = 1;
-alphabet = fieldnames(database);
+spaced = 1;
+% alphabet = fieldnames(database);
 
 for i = 1: size(letterNames,1)
-%     if spaced
-%         alphabet = fieldnames(databaseUpper);
-%         spaced = 0;
-%     else
-%         alphabet = fieldnames(databaseLower);
-%     end
+    if spaced
+        alphabet = fieldnames(databaseUpper);
+        spaced = 0;
+    else
+        alphabet = fieldnames(databaseLower);
+    end
 
     currentLetter = letterNames(i);
     currentGlyph = letters.(char(currentLetter));
