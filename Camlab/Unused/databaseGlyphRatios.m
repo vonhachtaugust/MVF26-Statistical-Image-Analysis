@@ -1,4 +1,4 @@
-load('database.mat');
+load('database_highres.mat');
 
 fields = char(fieldnames(database));
 for i = 1:size(fields,1)
@@ -7,4 +7,4 @@ for i = 1:size(fields,1)
     database.(fields(i)) = currField;
 end
 
-save('database.mat','database');
+save('database_highres.mat','database');

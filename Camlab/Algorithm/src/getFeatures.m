@@ -17,8 +17,8 @@ n03 = getCentralMoments(binaryImage,0,3);
 n12 = getCentralMoments(binaryImage,1,2);
 n21 = getCentralMoments(binaryImage,2,1);
 
-% Ration:
-
+% Ratio:
+features = [features size(binaryImage,1)/size(binaryImage,2)];
 
 % Formfactor:
 features = [features 4*pi*area/(perimeter^2)];
