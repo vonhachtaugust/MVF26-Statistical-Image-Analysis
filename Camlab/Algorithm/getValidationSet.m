@@ -24,11 +24,10 @@ NumNotImages = length(D([D.isdir]));
 classificationDatabase = struct;
 occurance = struct;
 
-for i = NumNotImages+1:Num
+for i = 1:(Num+NumNotImages)
     name = D(i).name;
-    
     if ~strcmp(name,'.') && ~strcmp(name,'..')
-        I = imread(D(i).name);
+      I = imread(D(i).name);
         letters = getLetters(I);
         fields = fieldnames(letters);
         
@@ -57,4 +56,4 @@ for i = NumNotImages+1:Num
         end
     end
 end
-save('classDatabase.mat','classificationDatabase');
+%save('classDatabase.mat','classDatabase');
