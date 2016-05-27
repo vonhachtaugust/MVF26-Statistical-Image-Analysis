@@ -15,14 +15,33 @@ else
     path(path,'./database/ClassificationDatabase');
 end
 
+%% Create webcam object and obtain an image:
+
+clear cam;
+cam = webcam(1);
+preview(cam);
+pause(10);
+img = snapshot(cam);
+img = imrotate(rgb2gray(img),90);
+clear cam;
+
+%%
+A = imhist(img);
+B = zeros(size(A,1),1);
+meansize = 4;
+for i = 1+meansize: size(A,1)-meansize
+    B(i) = sum(A(i-meansize:i+meansize))/(meansize*2+1);
+end
+hold on
+figure(2), plot(B)
+
+%%
 
 % Load necessary data
-I = imread('7.jpg');
+I = imread('1.jpg');
 %figure(1), imshow(I);
 load('database_highres.mat');
 load('classificationDatabase.mat');
-% load('databaseUpperCase.mat');
-% load('databaseLowerCase.mat');
 letters = getLetters2(I);
 
 %% Compare with database
@@ -34,11 +53,11 @@ euclidean = struct;
 featurelist = randperm(12,2+ceil(rand*8));
 
 for i = 1:numel(fieldnames(letters))
-    if i == 1
-        database = databaseUpper;
-    else
-        database = databaseLower;
-    end
+%     if i == 1
+%         database = databaseUpper;
+%     else
+%         database = databaseLower;
+%     end
     fields = fieldnames(database);
     len = numel(fieldnames(database));
     

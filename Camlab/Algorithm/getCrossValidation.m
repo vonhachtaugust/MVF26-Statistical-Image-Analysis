@@ -1,22 +1,4 @@
-clear all;
-clc;
-%clf;
-
-% Add source files to path
-if strcmp(computer,'PCWIN')
-  path(path,'.\src');
-  path(path,'.\images');
-  path(path,'.\database');
-  path(path,'.\database\ClassificationDatabase');
-else
-  path(path,'./src');
-  path(path,'./images');
-  path(path,'./database');
-  path(path,'./database/ClassificationDatabase');
-end
-
-load('classDatabase.mat');
-load('database_highres.mat');
+function error = getCrossValidation(classificationDatabase, database, featurelist)
 
 databaseFields = fieldnames(database);
 
@@ -25,23 +7,17 @@ errorRate = struct;
 
 % For each database letter
 for i = 1:numel(fields)
-  % only consider lower case letters
-  %tf = isstrprop(fields(i),'upper');
-  %if ~tf{1}
   % The accual letter
   correctLetter = fields{i};
   
   % Number of data fields of this letter
   validatFields = fieldnames(classificationDatabase.(fields{i}));
   
-  % Not consider fields with too little data
-  %if numel(validatFields) >= 5
-  
   % For each data field
   for j = 1:numel(validatFields)
     glyph = classificationDatabase.(fields{i}).(validatFields{j});
     
-    features = getFeatures(glyph);
+    features = getFeatures(glyph, featurelist);
     [height, width] = size(glyph);
     
     len = numel(fieldnames(database));
@@ -50,7 +26,7 @@ for i = 1:numel(fields)
     for k = 1:len
       databaseGlyph = binaryResample(database.(databaseFields{k}).glyph, width, height);
       
-      databaseFeatures = getFeatures(databaseGlyph);
+      databaseFeatures = getFeatures(databaseGlyph, featurelist);
       densityMatrix = (~glyph).*(databaseGlyph);
       
       euclidean(k,1) = norm(databaseFeatures-features);
@@ -67,8 +43,6 @@ for i = 1:numel(fields)
       end
     end
     errorRate.(correctLetter).(validatFields{j}) = let;
-    %end
-    %end
   end
 end
 
@@ -87,4 +61,4 @@ for i = 1:numel(errorFields)
     sum = sum + 1;
   end
 end
-disp(correct/sum);
+error = 1-correct/sum;

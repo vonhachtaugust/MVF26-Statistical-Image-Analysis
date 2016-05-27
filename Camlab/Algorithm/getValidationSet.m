@@ -5,12 +5,12 @@ clc;
 % Add source files to path
 if strcmp(computer,'PCWIN')
     path(path,'.\src');
-    path(path,'.\images');
+    path(path,'.\images\High_res');
     path(path,'.\database');
     path(path,'.\database\ClassificationDatabase');
 else
     path(path,'./src');
-    path(path,'./images');
+    path(path,'./images/High_res');
     path(path,'./database');
     path(path,'./database/ClassificationDatabase');
 end
@@ -28,12 +28,13 @@ for i = 1:(Num+NumNotImages)
     name = D(i).name;
     if ~strcmp(name,'.') && ~strcmp(name,'..')
       I = imread(D(i).name);
-        letters = getLetters(I);
+        letters = getLetters2(I);
         fields = fieldnames(letters);
         
         for j = 1:numel(fields);
             % Show letter:
-            figure(1), imshow(letters.(fields{j}));
+            figure(1), movegui(imshow(letters.(fields{j})),'northwest');
+            
             
             % Dialog box
             prompt = {'Enter letter:'};
@@ -56,4 +57,4 @@ for i = 1:(Num+NumNotImages)
         end
     end
 end
-%save('classDatabase.mat','classDatabase');
+save('classificationDatabase.mat','classificationDatabase');
