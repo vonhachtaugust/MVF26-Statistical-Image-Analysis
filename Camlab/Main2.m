@@ -8,9 +8,9 @@ warning('off','all') % Here to remove warnings about scaling when using imshow()
 nhood1 = [0,1,0; 1,1,1; 0,1,0]; %neumann neighbourhood
 nhood2 = [1,1,1; 1,1,1; 1,1,1]; %complete euclidean neighbourhood
 nhood3 = [0,1,0; 0,1,0; 0,1,0]; %down neighbourhood
-maxAngle = 10; % Maximum angle of picture in degrees
-binarizationThreshold = 65; %[0,255]
-dilates_and_erodes = 8; % Number of times to erode and dilate before hough transform
+maxAngle = 8; % Maximum angle of picture in degrees
+binarizationThreshold = 70; %[0,255]
+dilates_and_erodes = 10; % Number of times to erode and dilate before hough transform
 houghLineThreshold = 0.5; % Threshold for how "strong" lines must be to be included
 maximumHoughLines = 18; % Maximum number of lines to be found by hough transformation
 searchResolution = 20; % Resolution when searching for borders of card, recommended max 1/50 of picture size, lower when large angles allowed for card
@@ -21,20 +21,20 @@ searchResolution = 20; % Resolution when searching for borders of card, recommen
 
 % I = imread('Images\dbImages\14.jpg');
 % I = imread('Images\confirm6M.jpg');
-I = imread('Images/dbImages_high/3.jpg');
+I = imread('Images/dbImages/7.jpg');
 
 figure(1), imshow(I)
 I_bin = rgb2gray(I) > binarizationThreshold;
-% figure(2), imshow(I_bin);
-h = figure(2), imhist(rgb2gray(I));
-A = imhist(rgb2gray(I));
-B = zeros(size(A,1),1);
-meansize = 4;
-for i = 1+meansize: size(A,1)-meansize
-    B(i) = sum(A(i-meansize:i+meansize))/(meansize*2+1);
-end
-hold on
-plot(B)
+figure(2), imshow(I_bin);
+% h = figure(2), imhist(rgb2gray(I));
+% A = imhist(rgb2gray(I));
+% B = zeros(size(A,1),1);
+% meansize = 4;
+% for i = 1+meansize: size(A,1)-meansize
+%     B(i) = sum(A(i-meansize:i+meansize))/(meansize*2+1);
+% end
+% hold on
+% plot(B)
 % saveas(h,'nr26','fig')
 
 
@@ -125,13 +125,13 @@ figure(8), imshow(new_I);
 % Extract Textbox:------------------------------------------------
 width = size(new_I,2);
 height = size(new_I,1);
-textbox = new_I(0.055*height:0.105*height , 0.074*width:0.78*width);
+textbox = new_I(0.055*height:0.11*height , 0.074*width:0.78*width);
 figure(9), imshow(textbox)
 textbox = imerode(textbox,nhood3);
 textbox = imerode(textbox,nhood1);
 BW3 = ~imclearborder(~textbox);
-textbox = imdilate(BW3,nhood3);
 textbox = imdilate(BW3,nhood1);
+textbox = imdilate(textbox,nhood3);
 figure(10), imshow(textbox);
 % textbox = imdilate(textbox,nhood3);
 % textbox = imerode(imdilate(textbox,nhood3),nhood3);
