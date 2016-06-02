@@ -29,7 +29,7 @@ end
 
 % Elongatedness:
 if any(featurelist == 3)
-    %features = [features area/((thickness)^2)];
+    features = [features area/((thickness)^2)];
 end
 
 % Convexity:
@@ -39,7 +39,7 @@ end
 
 % Solidity
 if any(featurelist == 5)
-    %features = [features area/convexarea];
+    features = [features area/convexarea];
 end
 
 % Area moment 1
