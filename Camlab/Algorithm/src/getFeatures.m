@@ -1,6 +1,5 @@
 function features = getFeatures(binaryImage,featurelist)
 
-features = [];
 
 perimeter = sum(sum(bwperim(binaryImage)));
 area = bwarea(binaryImage);

@@ -1,8 +1,8 @@
-function error = getCrossValidation(classificationDatabase, database, featurelist)
+function error = getCrossValidation(training, reference, featurelist)
 
-databaseFields = fieldnames(database);
+databaseFields = fieldnames(reference);
 
-fields = fieldnames(classificationDatabase);
+fields = fieldnames(training);
 errorRate = struct;
 
 % For each database letter
@@ -11,20 +11,21 @@ for i = 1:numel(fields)
   correctLetter = fields{i};
   
   % Number of data fields of this letter
-  validatFields = fieldnames(classificationDatabase.(fields{i}));
+  validatFields = fieldnames(training.(fields{i}));
   
   % For each data field
   for j = 1:numel(validatFields)
-    glyph = classificationDatabase.(fields{i}).(validatFields{j});
+    glyph = training.(fields{i}).(validatFields{j});
+    
     
     features = getFeatures(glyph, featurelist);
     [height, width] = size(glyph);
     
-    len = numel(fieldnames(database));
+    len = numel(fieldnames(reference));
     euclidean = zeros(len,2);
     
     for k = 1:len
-      databaseGlyph = binaryResample(database.(databaseFields{k}).glyph, width, height);
+      databaseGlyph = binaryResample(reference.(databaseFields{k}).glyph, width, height);
       
       databaseFeatures = getFeatures(databaseGlyph, featurelist);
       densityMatrix = (~glyph).*(databaseGlyph);
